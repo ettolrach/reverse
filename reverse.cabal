@@ -12,7 +12,7 @@ synopsis: A reversi clone implemented in Haskell, front-end implemented as a web
 bug-reports: https://github.com/ettolrach/reverse/issues
 
 -- The license under which the package is released.
-license: Apache License 2.0 (see ./LICENSE)
+license: Apache-2.0
 author:             ettolrach
 maintainer:         ettolrach@disroot.org
 
