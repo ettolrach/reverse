@@ -58,7 +58,7 @@ getIndiciesToFlip Game { board = g, width = w, activePlayer = c } (x,y) = concat
       -- If it's out of bounds.
       | x + dx >= width || y + dy >= width || x + dx < 0 || y + dy < 0 = []
       -- If the colour of the counter isn't the desired one.
-      | spaceAtIndex g (x + dx, y + dy) width /= Counter c = []
+      | spaceAtIndex g (x + dx, y + dy) width /= Counter (flip c) = []
       -- Otherwise, it's a valid coordinate and the function should keep checking the next one.
       | otherwise = (x + dx, y + dy) : inDirection g width (x + dx, y + dy) c (dx,dy)
 
