@@ -1,4 +1,4 @@
-module Board (Colour (..), Board.flip) where
+module Board (Colour (..), Space (..), Game (..), Grid (..)) where
 
 import Prelude hiding (flip)
 
@@ -29,21 +29,6 @@ coordToIndex (x,y) width = x + y * width
 
 spaceAtIndex :: Grid -> Coordinate -> Int -> Space
 spaceAtIndex g (x,y) width = g !! coordToIndex (x,y) width
-
-emptyGrid :: Int -> Grid
-emptyGrid 0 = []
-emptyGrid n = Empty : emptyGrid (n-1)
-
-startingGrid :: Grid
-startingGrid =
-  [ Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
-  , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
-  , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
-  , Empty, Empty, Empty, Counter Black, Counter White, Empty, Empty, Empty
-  , Empty, Empty, Empty, Counter White, Counter Black, Empty, Empty, Empty
-  , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
-  , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
-  , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty ]
 
 directions :: [Coordinate]
 directions = [(0,-1), (1,-1), (1,0), (1,1), (0,1), (-1,1), (-1, 0), (-1,-1)]
