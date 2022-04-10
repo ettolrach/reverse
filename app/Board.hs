@@ -53,3 +53,18 @@ legal game coord = getIndiciesToFlip game coord /= []
 
 movesAvailable :: Game -> Bool
 movesAvailable Game { board = g, width = w, activePlayer = c } = or [legal (Game g w c) (x, y) | y <- [0..w], x <- [0..w]]
+
+placeCounter :: Game -> Coordinate -> Game
+placeCounter Game { board = g, width = w, activePlayer = c } coord = Game (Seq.update (coordToIndex coord w) (Counter (flip c)) g) w c
+
+updateBoard :: Game -> [Coordinate] -> Game
+updateBoard game [] = game
+updateBoard Game { board = g, width = w, activePlayer = c } ((x,y):cs) = updateBoard (placeCounter (Game g w c) (x,y)) cs
+
+makeMove :: Game -> Coordinate -> Maybe Game
+makeMove Game { board = g, width = w, activePlayer = c } (x,y)
+  | null totalFlip = Nothing
+  | otherwise = Just $ updateBoard (Game g w c) totalFlip
+  where
+    totalFlip :: [Coordinate]
+    totalFlip = getIndiciesToFlip (Game g w c) (x,y)
