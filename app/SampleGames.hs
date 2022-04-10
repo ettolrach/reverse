@@ -1,11 +1,12 @@
 module SampleGames where
 
 import Board (Colour (..), Space (..), Game (..), Grid (..))
+import qualified Data.Sequence as Seq
 
 emptyGame :: Game
-emptyGame = Game { board = emptyGrid 8, width = 8, activePlayer = Black }
+emptyGame = Game { board = Seq.fromList $ emptyGrid 8, width = 8, activePlayer = Black }
   where
-    emptyGrid :: Int -> Grid
+    emptyGrid :: Int -> [Space]
     emptyGrid 0 = []
     emptyGrid n = Empty : emptyGrid (n-1)
 
@@ -14,6 +15,7 @@ startingGame = Game { board = startingGrid, width = 8, activePlayer = Black }
   where
     startingGrid :: Grid
     startingGrid =
+      Seq.fromList
       [ Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
       , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
       , Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty
