@@ -1,0 +1,16 @@
+/* Import PT Sans if the user doesn't have the font already. */
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap");
+
+/* === Main website styling === */
+/* Cancel out the margin and padding around the body of the page. */
+html, body {
+	margin: 0;
+	padding: 0;
+}
+body {
+	background-color: #111;
+}
+* {
+	color: white;
+	font-family: "PT Sans";
+}
