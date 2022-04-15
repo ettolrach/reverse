@@ -2,12 +2,13 @@ module Board (Colour (..), Space (..), Game (..), Grid (..)) where
 
 import Prelude hiding (flip)
 import qualified Data.Sequence as Seq
+import qualified Data.Foldable
 
 data Colour = Black | White
-    deriving (Eq, Show)
+    deriving (Eq)
 
 data Space = Empty | Counter Colour
-    deriving (Eq, Show)
+    deriving (Eq)
 
 type Grid = Seq.Seq Space
 type Coordinate = (Int, Int)
@@ -17,6 +18,28 @@ data Game = Game
   { board :: Grid
   , width :: Int
   , activePlayer :: Colour }
+
+instance Show Colour where
+  show Black = "B"
+  show White = "W"
+
+instance Show Space where
+  show Empty = " "
+  show (Counter c) = show c
+
+instance Show Game where
+  show Game { board = g, width = w, activePlayer = c } = gridStr ++ "\n" ++ info
+    where
+      gStrList = concatMap show (Data.Foldable.toList g)
+      gridStr = intersperseEvery w '\n' gStrList
+      info = "Width: " ++ show w ++ "; Active: " ++ show c
+
+intersperseEvery :: Int -> a -> [a] -> [a]
+intersperseEvery n c l = go n l
+  where
+    go _ [] = []
+    go 0 l = c : go n l
+    go r (x:xs) = x : go (r-1) xs
 
 flip :: Colour -> Colour
 flip Black = White
