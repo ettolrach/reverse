@@ -58,15 +58,16 @@ directions :: [Coordinate]
 directions = [(0,-1), (1,-1), (1,0), (1,1), (0,1), (-1,1), (-1, 0), (-1,-1)]
 
 getIndiciesToFlip :: Game -> Coordinate -> [Coordinate]
+-- Use a list comprehension to calculate the indicies in each of the 8 directions.
 getIndiciesToFlip Game { board = g, width = w, activePlayer = c } (x,y) = concat [inDirection g w (x,y) c (dx,dy) | (dx, dy) <- directions]
   where
     inDirection :: Grid -> Int -> Coordinate -> Colour -> Direction -> [Coordinate]
     inDirection g width (x,y) c (dx,dy)
       -- If the clicked coordinate isn't empty, it's an illegal move.
       | spaceAtIndex g (x, y) width /= Just Empty = []
-      -- If it's out of bounds.
+      -- If it's out of bounds, then it need not be flipped.
       | x + dx >= width || y + dy >= width || x + dx < 0 || y + dy < 0 = []
-      -- If the colour of the counter isn't the desired one.
+      -- If the colour of the counter isn't the desired one, then it also doesn't need to be flipped.
       | spaceAtIndex g (x + dx, y + dy) width /= Just (Counter (flip c)) = []
       -- Otherwise, it's a valid coordinate and the function should keep checking the next one.
       | otherwise = (x + dx, y + dy) : inDirection g width (x + dx, y + dy) c (dx,dy)
@@ -84,6 +85,7 @@ updateBoard :: Game -> [Coordinate] -> Game
 updateBoard game [] = game
 updateBoard Game { board = g, width = w, activePlayer = c } ((x,y):cs) = updateBoard (placeCounter (Game g w c) (x,y)) cs
 
+-- This returns Nothing if the move was not legal.
 makeMove :: Game -> Coordinate -> Maybe Game
 makeMove Game { board = g, width = w, activePlayer = c } (x,y)
   | null totalFlip = Nothing
