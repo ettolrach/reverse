@@ -28,11 +28,14 @@ instance Show Space where
   show (Counter c) = show c
 
 instance Show Game where
-  show Game { board = g, width = w, activePlayer = c } = gridStr ++ "\n" ++ info
+  show Game { board = g, width = w, activePlayer = c } = gridString (Game g w c) ++ "\n" ++ info
     where
-      gStrList = concatMap show (Data.Foldable.toList g)
-      gridStr = intersperseEvery w '\n' gStrList
       info = "Width: " ++ show w ++ "; Active: " ++ show c
+
+gridString :: Game -> String
+gridString Game { board = g, width = w, activePlayer = c } = intersperseEvery w '\n' gStrList
+  where
+    gStrList = concatMap show (Data.Foldable.toList g)
 
 intersperseEvery :: Int -> a -> [a] -> [a]
 intersperseEvery n c l = go n l
