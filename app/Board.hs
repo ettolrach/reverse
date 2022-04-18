@@ -1,4 +1,4 @@
-module Board (Colour (..), Space (..), Game (..), Grid (..)) where
+module Board (Colour (..), Space (..), Coordinate, Grid (..), Game (..), gridString, colourStr, colourStrLower, flip, movesAvailable, makeMove, winner) where
 
 import Prelude hiding (flip)
 import qualified Data.Sequence as Seq
@@ -36,6 +36,14 @@ gridString :: Game -> String
 gridString Game { board = g, width = w, activePlayer = c } = intersperseEvery w '\n' gStrList
   where
     gStrList = concatMap show (Data.Foldable.toList g)
+
+colourStr :: Colour -> String
+colourStr Black = "Black"
+colourStr White = "White"
+
+colourStrLower :: Colour -> String
+colourStrLower Black = "black"
+colourStrLower White = "white"
 
 intersperseEvery :: Int -> a -> [a] -> [a]
 intersperseEvery n c l = go n l
@@ -96,3 +104,13 @@ makeMove Game { board = g, width = w, activePlayer = c } (x,y)
   where
     totalFlip :: [Coordinate]
     totalFlip = getIndiciesToFlip (Game g w c) (x,y)
+
+winner :: Game -> Maybe Colour
+winner Game { board = g, width = w, activePlayer = c }
+  | blackCounter > whiteCounter = Just Black
+  | whiteCounter > blackCounter = Just White
+  | otherwise = Nothing
+  where
+    blackCounter = length $ filter (== Counter Black) spaces
+    whiteCounter = length $ filter (== Counter White) spaces
+    spaces = Data.Foldable.toList g
