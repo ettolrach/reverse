@@ -98,16 +98,15 @@ updateBoard Game { board = g, width = w, activePlayer = c } ((x,y):cs) = updateB
 
 -- This returns Nothing if the move was not legal.
 makeMove :: Game -> Coordinate -> Maybe Game
-makeMove Game { board = g, width = w, activePlayer = c } (x,y)
+makeMove game (x,y)
   | null totalFlip = Nothing
-  | otherwise = Just newGame
+  | otherwise = Just (Game newG w (flip c))
   where
-    newGame :: Game
-    newGame = placeCounter flippedBoardGame (x,y)
+    Game { board = newG, width = w, activePlayer = c } = placeCounter flippedBoardGame (x,y)
     flippedBoardGame :: Game
-    flippedBoardGame = updateBoard (Game g w c) totalFlip
+    flippedBoardGame = updateBoard game totalFlip
     totalFlip :: [Coordinate]
-    totalFlip = getIndiciesToFlip (Game g w c) (x,y)
+    totalFlip = getIndiciesToFlip game (x,y)
 
 winner :: Game -> Maybe Colour
 winner Game { board = g, width = w, activePlayer = c }
