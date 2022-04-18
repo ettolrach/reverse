@@ -90,7 +90,7 @@ movesAvailable :: Game -> Bool
 movesAvailable Game { board = g, width = w, activePlayer = c } = or [legal (Game g w c) (x, y) | y <- [0..w], x <- [0..w]]
 
 placeCounter :: Game -> Coordinate -> Game
-placeCounter Game { board = g, width = w, activePlayer = c } coord = Game (Seq.update (coordToIndex coord w) (Counter (flip c)) g) w c
+placeCounter Game { board = g, width = w, activePlayer = c } coord = Game (Seq.update (coordToIndex coord w) (Counter c) g) w c
 
 updateBoard :: Game -> [Coordinate] -> Game
 updateBoard game [] = game
@@ -100,8 +100,12 @@ updateBoard Game { board = g, width = w, activePlayer = c } ((x,y):cs) = updateB
 makeMove :: Game -> Coordinate -> Maybe Game
 makeMove Game { board = g, width = w, activePlayer = c } (x,y)
   | null totalFlip = Nothing
-  | otherwise = Just $ updateBoard (Game g w c) totalFlip
+  | otherwise = Just newGame
   where
+    newGame :: Game
+    newGame = placeCounter flippedBoardGame (x,y)
+    flippedBoardGame :: Game
+    flippedBoardGame = updateBoard (Game g w c) totalFlip
     totalFlip :: [Coordinate]
     totalFlip = getIndiciesToFlip (Game g w c) (x,y)
 
