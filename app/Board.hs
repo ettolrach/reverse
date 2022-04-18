@@ -5,10 +5,10 @@ import qualified Data.Sequence as Seq
 import qualified Data.Foldable
 
 data Colour = Black | White
-    deriving (Eq)
+  deriving (Eq)
 
 data Space = Empty | Counter Colour
-    deriving (Eq)
+  deriving (Eq)
 
 type Grid = Seq.Seq Space
 type Coordinate = (Int, Int)

@@ -28,7 +28,7 @@ import Data.List (intersperse)
 
 printPrompt :: Game -> IO ()
 printPrompt Game {board = g, width = w, activePlayer = c} =
-    putStrLn $ prettyGrid (Game g w c) ++ "\n" ++ colourStr c ++ ", please enter a coodinate (use the format \"x,y\"):"
+  putStrLn $ prettyGrid (Game g w c) ++ "\n" ++ colourStr c ++ ", please enter a coodinate (use the format \"x,y\"):"
 
 prettyGrid :: Game -> String
 prettyGrid Game {board = g, width = w, activePlayer = c} = unlines gCoords
@@ -63,10 +63,10 @@ printWinner Nothing = putStrLn "It is a draw."
 
 strToCoord :: String -> Maybe Coordinate
 strToCoord s = case (x,y) of
-    (Nothing, Nothing) -> Nothing
-    (Just _, Nothing) -> Nothing
-    (Nothing, Just _) -> Nothing
-    (Just x, Just y) -> Just (x,y)
+  (Nothing, Nothing) -> Nothing
+  (Just _, Nothing) -> Nothing
+  (Nothing, Just _) -> Nothing
+  (Just x, Just y) -> Just (x,y)
   where
     (x,y) = case comma of
       Nothing -> (Nothing, Nothing)
@@ -87,17 +87,17 @@ loop Game {board = g, width = w, activePlayer = c}
     coordStr <- getLine
     let coord = strToCoord coordStr
     case coord of
-        Nothing -> putStrLn "That is an invalid coordinate." >> loop (Game g w c)
-        Just (x,y) -> case makeMove (Game g w c) (x, y) of
-            Nothing -> putStrLn "That move is not legal." >> loop (Game g w c)
-            Just newGame -> loop newGame
+      Nothing -> putStrLn "That is an invalid coordinate." >> loop (Game g w c)
+      Just (x,y) -> case makeMove (Game g w c) (x, y) of
+        Nothing -> putStrLn "That move is not legal." >> loop (Game g w c)
+        Just newGame -> loop newGame
   | movesAvailable (Game g w (flip c)) = do
-      putStrLn $ "\n\n" ++ colourStr c ++ " can't move, so it's " ++ (colourStrLower . flip) c ++ "'s turn."
-      loop (Game g w (flip c))
+    putStrLn $ "\n\n" ++ colourStr c ++ " can't move, so it's " ++ (colourStrLower . flip) c ++ "'s turn."
+    loop (Game g w (flip c))
   | otherwise = putStrLn "The winner is " >> printWinner (winner (Game g w c))
 
 main :: IO ()
 main = do
-    let game = startingGame
-    loop game
-    putStrLn "Hello, Haskell!"
+  let game = startingGame
+  loop game
+  putStrLn "Hello, Haskell!"
