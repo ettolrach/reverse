@@ -91,7 +91,9 @@ loop Game {board = g, width = w, activePlayer = c}
         Just (x,y) -> case makeMove (Game g w c) (x, y) of
             Nothing -> putStrLn "That move is not legal." >> loop (Game g w c)
             Just newGame -> loop newGame
-  | movesAvailable (Game g w (flip c)) = putStrLn $ colourStr c ++ " can't move, so it's " ++ (colourStrLower . flip) c ++ "'s turn."
+  | movesAvailable (Game g w (flip c)) = do
+      putStrLn $ "\n\n" ++ colourStr c ++ " can't move, so it's " ++ (colourStrLower . flip) c ++ "'s turn."
+      loop (Game g w (flip c))
   | otherwise = putStrLn "The winner is " >> printWinner (winner (Game g w c))
 
 main :: IO ()
