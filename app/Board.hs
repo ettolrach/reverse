@@ -28,12 +28,12 @@ instance Show Space where
   show (Counter c) = show c
 
 instance Show Game where
-  show Game { board = g, width = w, activePlayer = c } = gridString (Game g w c) ++ "\n" ++ info
+  show Game {board = g, width = w, activePlayer = c} = gridString (Game g w c) ++ "\n" ++ info
     where
       info = "Width: " ++ show w ++ "; Active: " ++ show c
 
 gridString :: Game -> String
-gridString Game { board = g, width = w, activePlayer = c } = intersperseEvery w '\n' gStrList
+gridString Game {board = g, width = w, activePlayer = c} = intersperseEvery w '\n' gStrList
   where
     gStrList = concatMap show (Data.Foldable.toList g)
 
@@ -70,7 +70,7 @@ directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -
 
 getIndiciesToFlip :: Game -> Coordinate -> [Coordinate]
 -- Use a list comprehension to calculate the indicies in each of the 8 directions.
-getIndiciesToFlip Game { board = g, width = w, activePlayer = c } (x,y) = concat [inDirection g w (x,y) c (dx,dy) | (dx, dy) <- directions]
+getIndiciesToFlip Game {board = g, width = w, activePlayer = c} (x,y) = concat [inDirection g w (x,y) c (dx,dy) | (dx, dy) <- directions]
   where
     inDirection :: Grid -> Int -> Coordinate -> Colour -> Direction -> [Coordinate]
     inDirection g width (x,y) c (dx,dy)
@@ -87,10 +87,10 @@ legal :: Game -> Coordinate -> Bool
 legal game coord = getIndiciesToFlip game coord /= []
 
 movesAvailable :: Game -> Bool
-movesAvailable Game { board = g, width = w, activePlayer = c } = or [legal (Game g w c) (x, y) | y <- [0..w], x <- [0..w]]
+movesAvailable Game {board = g, width = w, activePlayer = c} = or [legal (Game g w c) (x, y) | y <- [0..w], x <- [0..w]]
 
 placeCounter :: Game -> Coordinate -> Game
-placeCounter Game { board = g, width = w, activePlayer = c } coord = Game (Seq.update (coordToIndex coord w) (Counter c) g) w c
+placeCounter Game {board = g, width = w, activePlayer = c} coord = Game (Seq.update (coordToIndex coord w) (Counter c) g) w c
 
 updateBoard :: Game -> [Coordinate] -> Game
 updateBoard game [] = game
@@ -102,14 +102,14 @@ makeMove game (x,y)
   | null totalFlip = Nothing
   | otherwise = Just (Game newG w (flip c))
   where
-    Game { board = newG, width = w, activePlayer = c } = placeCounter flippedBoardGame (x,y)
+    Game {board = newG, width = w, activePlayer = c} = placeCounter flippedBoardGame (x,y)
     flippedBoardGame :: Game
     flippedBoardGame = updateBoard game totalFlip
     totalFlip :: [Coordinate]
     totalFlip = getIndiciesToFlip game (x,y)
 
 winner :: Game -> Maybe Colour
-winner Game { board = g, width = w, activePlayer = c }
+winner Game {board = g, width = w, activePlayer = c}
   | blackCounter > whiteCounter = Just Black
   | whiteCounter > blackCounter = Just White
   | otherwise = Nothing

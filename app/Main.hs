@@ -18,20 +18,20 @@ limitations under the License. -}
 module Main where
 
 import Board
-import SampleGames ( startingGame )
+import SampleGames (startingGame)
 import Prelude hiding (flip)
-import Text.Read ( readMaybe )
+import Text.Read (readMaybe)
 import Data.Maybe (isNothing)
 import Data.Foldable (toList)
-import Data.List.Split ( chunksOf )
+import Data.List.Split (chunksOf)
 import Data.List (intersperse)
 
 printPrompt :: Game -> IO ()
-printPrompt Game { board = g, width = w, activePlayer = c } =
+printPrompt Game {board = g, width = w, activePlayer = c} =
     putStrLn $ prettyGrid (Game g w c) ++ "\n" ++ colourStr c ++ ", please enter a coodinate (use the format \"x,y\"):"
 
 prettyGrid :: Game -> String
-prettyGrid Game { board = g, width = w, activePlayer = c } = unlines gCoords
+prettyGrid Game {board = g, width = w, activePlayer = c} = unlines gCoords
   where
     gCoords :: [String]
     gCoords = combineEveryN 2 $ mergeAlternating (map (++ "|") (" " : chunksOf 1 (concatMap show [0..(w-1)]))) (intersperse '|' (concatMap show [0..(w-1)]) : gWithPipes)
