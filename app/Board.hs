@@ -37,6 +37,13 @@ gridString Game { board = g, width = w, activePlayer = c } = intersperseEvery w 
   where
     gStrList = concatMap show (Data.Foldable.toList g)
 
+intersperseEvery :: Int -> a -> [a] -> [a]
+intersperseEvery n c l = go n l
+  where
+    go _ [] = []
+    go 0 l = c : go n l
+    go r (x:xs) = x : go (r-1) xs
+
 colourStr :: Colour -> String
 colourStr Black = "Black"
 colourStr White = "White"
@@ -44,13 +51,6 @@ colourStr White = "White"
 colourStrLower :: Colour -> String
 colourStrLower Black = "black"
 colourStrLower White = "white"
-
-intersperseEvery :: Int -> a -> [a] -> [a]
-intersperseEvery n c l = go n l
-  where
-    go _ [] = []
-    go 0 l = c : go n l
-    go r (x:xs) = x : go (r-1) xs
 
 flip :: Colour -> Colour
 flip Black = White
@@ -66,7 +66,7 @@ spaceAtIndex :: Grid -> Coordinate -> Int -> Maybe Space
 spaceAtIndex g (x,y) width = g Seq.!? coordToIndex (x,y) width
 
 directions :: [Coordinate]
-directions = [(0,-1), (1,-1), (1,0), (1,1), (0,1), (-1,1), (-1, 0), (-1,-1)]
+directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 
 getIndiciesToFlip :: Game -> Coordinate -> [Coordinate]
 -- Use a list comprehension to calculate the indicies in each of the 8 directions.
@@ -94,7 +94,7 @@ placeCounter Game { board = g, width = w, activePlayer = c } coord = Game (Seq.u
 
 updateBoard :: Game -> [Coordinate] -> Game
 updateBoard game [] = game
-updateBoard Game { board = g, width = w, activePlayer = c } ((x,y):cs) = updateBoard (placeCounter (Game g w c) (x,y)) cs
+updateBoard game ((x,y):cs) = updateBoard (placeCounter game (x,y)) cs
 
 -- This returns Nothing if the move was not legal.
 makeMove :: Game -> Coordinate -> Maybe Game
