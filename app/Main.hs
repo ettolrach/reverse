@@ -22,10 +22,39 @@ import SampleGames ( startingGame )
 import Prelude hiding (flip)
 import Text.Read ( readMaybe )
 import Data.Maybe (isNothing)
+import Data.Foldable (toList)
+import Data.List.Split ( chunksOf )
+import Data.List (intersperse)
 
 printPrompt :: Game -> IO ()
 printPrompt Game { board = g, width = w, activePlayer = c } =
-    putStrLn $ gridString (Game g w c) ++ "\n" ++ colourStr c ++ ", please enter a coodinate (use the format \"x,y\"):"
+    putStrLn $ prettyGrid (Game g w c) ++ "\n" ++ colourStr c ++ ", please enter a coodinate (use the format \"x,y\"):"
+
+prettyGrid :: Game -> String
+prettyGrid Game { board = g, width = w, activePlayer = c } = unlines gCoords
+  where
+    gCoords :: [String]
+    gCoords = combineEveryN 2 $ mergeAlternating (map (++ "|") (" " : chunksOf 1 (concatMap show [0..(w-1)]))) (intersperse '|' (concatMap show [0..(w-1)]) : gWithPipes)
+    gWithPipes :: [String]
+    gWithPipes = map (intersperse '|') gStrList
+    gStrList :: [String]
+    gStrList = chunksOf w $ concatMap show (Data.Foldable.toList g)
+
+-- Merge while alternating the elements to combine. For example:
+-- mergeAlternating ['a', 'b', 'c', 'd'] ['A', 'B', 'C', 'D']
+--   = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D']
+mergeAlternating :: [a] -> [a] -> [a]
+mergeAlternating [] ys = ys
+mergeAlternating (x:xs) ys = x : mergeAlternating ys xs
+
+-- Combines every n elements in a list of lists together. For example:
+-- combineEveryN 2 ["ab", "AB", "cd", "CD", "efg", "EFG", "h"]
+--   = ["abAB", "cdCD", "efgEFG", "h"]
+combineEveryN :: Int -> [[a]] -> [[a]]
+combineEveryN _ [] = []
+combineEveryN n l
+  | n < 2 || n > length l = l
+  | otherwise = concat (take n l) : combineEveryN n (drop n l)
 
 printWinner :: Maybe Colour -> IO ()
 printWinner (Just Black) = putStrLn "Black has won!"
